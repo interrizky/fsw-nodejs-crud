@@ -51,58 +51,106 @@
   </div>
 </body>
 <script type="text/javascript">
-  displayAll()
-
   let wrapperAlert = document.querySelector('.wrapper-alert-home');
 
-  function displayAll() {
-    fetch('/list_all', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    })
-    .then(function (response) {
-      return response.json()
-    })
-    .then(function (result) {
-      // console.log(result)
+  // displayAll()
+  // function displayAll() {
+  //   fetch('/list_all', {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //   })
+  //   .then(function (response) {
+  //     return response.json()
+  //   })
+  //   .then(function (result) {
+  //     // console.log(result)
+  //     let tableBody = document.querySelector('.table-body');
+  //     for (let i = 0; i < result.result.length; i++) {
+  //       data = result.result[i];
+  //       tableBody.innerHTML += `
+  //         <tr>
+  //           <td scope="col" class="text-center">${ i+1 }</td>
+  //           <td scope="col" class="text-center">${ result.result[i].username }</td>
+  //           <td scope="col" class="text-center">${ result.result[i].password }</td>
+  //           <td scope="col" class="text-center">${ result.result[i].email }</td>
+  //           <td scope="col" class="text-center">${ result.result[i].address }</td>
+  //           <td scope="col" class="text-center">${ result.result[i].age }</td>
+  //           <td scope="col" class="text-center">
+  //             <a class="btn btn-outline-warning btn-sm" href="/find/${ result.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
+  //             <button id="${ result.result[i]._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
+  //           </td>
+  //         </tr>        
+  //       `;
 
-      let tableBody = document.querySelector('.table-body');
-      for (let i = 0; i < result.result.length; i++) {
-        data = result.result[i];
-        tableBody.innerHTML += `
-          <tr>
-            <td scope="col" class="text-center">${ i+1 }</td>
-            <td scope="col" class="text-center">${ result.result[i].username }</td>
-            <td scope="col" class="text-center">${ result.result[i].password }</td>
-            <td scope="col" class="text-center">${ result.result[i].email }</td>
-            <td scope="col" class="text-center">${ result.result[i].address }</td>
-            <td scope="col" class="text-center">${ result.result[i].age }</td>
-            <td scope="col" class="text-center">
-              <a class="btn btn-outline-warning btn-sm" href="/find/${ result.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
-              <button id="${ result.result[i]._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
-            </td>
-          </tr>        
-        `;
+  //       wrapperAlert.innerHTML = `
+  //         <div class="alert alert-info alert-dismissible fade show" role="alert">
+  //           <strong>${ result.message }!</strong>
+  //           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  //             <span aria-hidden="true">&times;</span>
+  //           </button>
+  //         </div>         
+  //       `;
+  //     }
+  //   })
+  //   .catch(function (error) {
+  //     console.log(error)
+  //   })
+  // }
 
-        wrapperAlert.innerHTML = `
-          <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <strong>${ result.message }!</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>         
-        `;
-      }
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
-  }
+  /* async await implementation to fetch data from callback fetch */
+  async function getDataTables() {
+    const response = await fetch('/list_all', {method: 'GET', headers: {'Content-Type': 'application/json'}})
+    // error handling - throw ke catch error
+    if (!response.ok) {
+      const message = `An error has occured: ${response.status} & Text : ${response.statusText}`;
+      throw new Error(message);
+    }
+    const datax = await response.json();
+
+    console.log("Dari Async Func: ", response)
+    console.log("Dari Async Func: ", datax);
+
+    return datax;
+  }  
+
+  getDataTables().then(function (datax) {
+    console.log("Dari Callback Func: ", datax);    
+    let tableBody = document.querySelector('.table-body');
+    for (let i = 0; i < datax.result.length; i++) {
+      wrapperAlert.innerHTML = `
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+          <strong>${ datax.message }!</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>         
+      `;
+
+      tableBody.innerHTML += `
+        <tr>
+          <td scope="col" class="text-center">${ i+1 }</td>
+          <td scope="col" class="text-center">${ datax.result[i].username }</td>
+          <td scope="col" class="text-center">${ datax.result[i].password }</td>
+          <td scope="col" class="text-center">${ datax.result[i].email }</td>
+          <td scope="col" class="text-center">${ datax.result[i].address }</td>
+          <td scope="col" class="text-center">${ datax.result[i].age }</td>
+          <td scope="col" class="text-center">
+            <a class="btn btn-outline-warning btn-sm" href="/find/${ datax.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
+            <button id="${ datax.result[i]._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
+          </td>
+        </tr>        
+      `;
+    }
+  })
+  .catch(function (error) {
+    // console.log(error)
+    error.message; //ambil parameter "message" dari await
+  })
 
   function deleteUser(params) {
-    fetch('/remove/'+params)
+    fetch('/remove/'+params, {method: 'GET', headers: {'Content-Type': 'application/json'}})
     .then(function (response) {
       return response.json();
     })
@@ -110,27 +158,62 @@
       console.log(result)
       wrapperAlert.innerHTML = `
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <strong>${ result.message }!</strong> Data Dengan ID ${ result.result } terhapus. Refresh Halaman Untuk Mendapatkan Data Terkini
+          <strong>${ result.message }!</strong> Data Dengan ID ${ result.result } terhapus. Tunggu beberapa saat lagi, Tabel akan me-reload data baru
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
       `;      
     })
+    .then(function (next) {
+      setTimeout(function () {
+        location.reload();
+      }, 2000)
+    })
     .catch(function(error) {
       console.log(error)
     })
   }
 
+  /* async implementation to delete data - GAKBISA, AUTO JALANIN FUNCTION PADAHAL ACTION KAN BY CLICK */
+  // async function deleteUser(params) {
+  //   const response = await fetch('/remove/'+params, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+  //   // error handling - throw ke catch error
+  //   if (!response.ok) {
+  //     const message = `An error has occured: ${response.status} & Text : ${response.statusText}`;
+  //     throw new Error(message);
+  //   }
+  //   const data = await response.json();
+
+  //   console.log(response)
+  //   console.log(data)
+    
+  //   return data;
+  // }
+
+  // deleteUser().then(function (result) {
+  //   console.log(result)
+  //   wrapperAlert.innerHTML = `
+  //     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  //       <strong>${ result.message }!</strong> Data Dengan ID ${ result.result } terhapus. Refresh Halaman Untuk Mendapatkan Data Terkini
+  //       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  //         <span aria-hidden="true">&times;</span>
+  //       </button>
+  //     </div>
+  //   `;          
+  // }).then(function (next) {
+  //   setTimeout(function () {
+  //     location.href = 'http://localhost:9701/home'
+  //   },3000)
+  // }).catch(function (error) {
+  //   error.message;
+  // })
+  /* end async implementation to delete data */  
+
   let txtSearch = document.querySelector('#search')
   txtSearch.addEventListener('keyup', function(event){
     if (event.keyCode === 13) {
-      fetch('/search/'+txtSearch.value, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      fetch('/search/'+txtSearch.value, {method: 'GET', headers: {'Content-Type': 'application/json'}})
       .then(function (response) {
         return response.json();
       })

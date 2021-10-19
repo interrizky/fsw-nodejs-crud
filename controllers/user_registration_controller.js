@@ -24,8 +24,8 @@ exports.listAll = (request, response) => {
   })  
 }  
 
-exports.insert = (request, response) => {  
-  let datax = request.body;
+exports.insert = async (request, response) => {  
+  let datax = await request.body;
 
   const user_registration_data = new userRegistrationModel({
     username: datax.username,
@@ -58,8 +58,8 @@ exports.search = (request, response) => {
   // userRegistrationModel.find( {username: inputSearch} )
 }
 
-exports.removeOne = (request, response) => {
-  let _id = request.params._id;
+exports.removeOne = async (request, response) => {
+  let _id = await request.params._id;
   console.log(_id);
 
   userRegistrationModel.deleteOne( { _id: _id } )
@@ -77,8 +77,8 @@ exports.removeOne = (request, response) => {
   })  
 }
 
-exports.findOne = (request, response) => {
-  let _params = request.params._id;
+exports.findOne = async (request, response) => {
+  let _params = await request.params._id;
 
   userRegistrationModel.findOne({ _id: _params })
   .then(resp => {
@@ -100,8 +100,8 @@ exports.findOne = (request, response) => {
   })
 }
 
-exports.searchOne = (request, response) => {
-  let uname = request.params.uname;
+exports.searchOne = async (request, response) => {
+  let uname = await request.params.uname;
 
   userRegistrationModel.findOne({ username: uname })
   .then(res => {
@@ -124,8 +124,8 @@ exports.searchOne = (request, response) => {
   })
 }
 
-exports.updateOne = (request, response) => {
-  let datax = request.body;
+exports.updateOne = async (request, response) => {
+  let datax = await request.body;
 
   console.log(datax);
   console.log(datax._id);
