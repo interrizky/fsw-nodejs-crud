@@ -118,7 +118,7 @@ exports.searchOne = async (request, response) => {
   })
   .catch(err => {
     response.send({
-      message: "failed to find a data",
+      message: "Failed to find a data",
       result: err
     })
   })

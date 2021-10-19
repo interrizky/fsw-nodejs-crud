@@ -4,7 +4,6 @@ const routes = express.Router();
 //Controller (menyambungkan controller ke Routes)
 const userRegistrationCotroller = require('../controllers/user_registration_controller');
 
-
 // halaman pertama
 routes.get('/home', userRegistrationCotroller.homepage);
 

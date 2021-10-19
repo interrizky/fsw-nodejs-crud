@@ -12,23 +12,25 @@
     <div class="wrapper-alert-home mt-5 mb-5">
       
     </div>    
-    <div class="wrapper-table mt-5 mb-5">
-      <div class="form-inline wrapper-judul-tabel">
-        <button type="button" name="btnForm" id="btnForm" class="btn btn-primary mb-2 w-10">
-          <i class="fa fa-user-plus"></i>
-          NEW
-        </button>
-        <div class="wrapper-search ml-lg-5">
-          <label class="sr-only" for="label-username">Username</label>
-          <div class="input-group mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text">@</div>
-            </div>
-            <input type="text" class="form-control search" id="search" name="search" placeholder="Search Username">
-          </div>                  
+    <div class="wrapper-table mt-5 mb-5 ml-2">
+      <div class="row option d-flex bd-highlight mb-3">
+        <div class="wrapper-judul-tabel mr-auto p-2 bd-highlight">
+          <button type="button" name="btnForm" id="btnForm" class="btn btn-primary mb-2 w-10">
+            <i class="fa fa-user-plus"></i>
+            NEW
+          </button>
         </div>
-      </div>
-      <div class="table-responsive">
+        <div class="wrapper-search p-2 mr-2 bd-highlight d-flex justify-content-end">
+          <input type="text" class="form-control search" id="search" name="search" placeholder="Find Username" style="width:50%;">
+          <button type="button" name="btnReset" id="btnReset" class="btn btn-small btn-secondary ml-2 mb-2 w-25">
+            <i class="fa fa-broom"></i>
+          </button>               
+          <button type="button" name="btnRefresh" id="btnRefresh" class="btn btn-small btn-info ml-2 mb-2 w-25">
+            <i class="fa fa-sync"></i>
+          </button>             
+        </div>   
+      </div>  
+      <div class="row table-responsive">
         <table class="table table-data">
           <caption class="caption">List All of User Registered</caption>
           <thead>
@@ -52,6 +54,7 @@
 </body>
 <script type="text/javascript">
   let wrapperAlert = document.querySelector('.wrapper-alert-home');
+  let tableBody = document.querySelector('.table-body');
 
   // displayAll()
   // function displayAll() {
@@ -117,7 +120,6 @@
 
   getDataTables().then(function (datax) {
     console.log("Dari Callback Func: ", datax);    
-    let tableBody = document.querySelector('.table-body');
     for (let i = 0; i < datax.result.length; i++) {
       wrapperAlert.innerHTML = `
         <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -220,25 +222,52 @@
       .then(function (result) {
         console.log(result);
         if(result.message == "Success To Fetch Data" && (result.result != "" )) {
-          wrapperAlert.innerHTML = `
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-              <p class="text-left"><b>${ result.message }!</b> Terdapat Data Sebagai Berikut:</p>
-              <div class="wrapper-data">
-                <p class="text-left"> Username: ${ result.result.username }</p>
-                <p class="text-left"> Password: ${ result.result.password }</p>
-                <p class="text-left"> Email: ${ result.result.email }</p>
-                <p class="text-left"> Age: ${ result.result.age }</p>
-                <p class="text-left"> Address: ${ result.result.address }</p>
-              </div>
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-          `;                
+          // wrapperAlert.innerHTML = `
+          //   <div class="alert alert-success alert-dismissible fade show" role="alert">
+          //     <p class="text-left"><b>${ result.message }!</b> Terdapat Data Sebagai Berikut:</p>
+          //     <div class="wrapper-data">
+          //       <p class="text-left"> Username: ${ result.result.username }</p>
+          //       <p class="text-left"> Password: ${ result.result.password }</p>
+          //       <p class="text-left"> Email: ${ result.result.email }</p>
+          //       <p class="text-left"> Age: ${ result.result.age }</p>
+          //       <p class="text-left"> Address: ${ result.result.address }</p>
+          //     </div>
+          //     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          //       <span aria-hidden="true">&times;</span>
+          //     </button>
+          //   </div>
+          // `;   
+          
+            wrapperAlert.innerHTML = `
+              <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong>${ result.message }!</strong> Terdapat Data Sebagai Berikut :
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>         
+            `;
+
+            tableBody.innerHTML = '';
+            tableBody.innerHTML += `
+              <tr>
+                <td scope="col" class="text-center">1</td>
+                <td scope="col" class="text-center">${ result.result.username }</td>
+                <td scope="col" class="text-center">${ result.result.password }</td>
+                <td scope="col" class="text-center">${ result.result.email }</td>
+                <td scope="col" class="text-center">${ result.result.address }</td>
+                <td scope="col" class="text-center">${ result.result.age }</td>
+                <td scope="col" class="text-center">
+                  <a class="btn btn-outline-warning btn-sm" href="/find/${ result.result._id }" role="button"><i class="fa fa-pencil"></i></a>
+                  <button id="${ result.result._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
+                </td>
+              </tr>        
+            `;
         } else {
           wrapperAlert.innerHTML = `
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-              <strong>Ooppss!</strong> Tidak Ada Data Dengan Username : ${ txtSearch.value }
+              <strong>Ooppss!</strong> Tidak Ada Data Dengan Username : ${ txtSearch.value }. <br />
+              Klik tombol <b>Reset</b> untuk menghapus keyword di kolom pencarian <br />
+              Klik tombol <b>Refresh</b> untuk kembali ke Halaman Awal <br />
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -256,6 +285,16 @@
   btnForm.addEventListener('click', function(event) {
     location.href = "http://localhost:9701/form"
   })
+
+  let btnRefresh = document.querySelector('#btnRefresh');
+  btnRefresh.addEventListener('click', function(event) {
+    location.href = "http://localhost:9701/home"
+  })  
+
+  let btnReset = document.querySelector('#btnReset');
+  btnReset.addEventListener('click', function(event) {
+    document.querySelector('#search').value = ''
+  })    
 </script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
