@@ -9,7 +9,7 @@ exports.form = (request, response) => {
 }
 
 exports.listAll = (request, response) => {
-  userRegistrationModel.find()
+  userRegistrationModel.find().sort( {_id: -1} )
   .then(resp => {
     response.send({
       message: "Displaying Current Collections From MongoDB",
@@ -107,7 +107,7 @@ exports.searchOne = async (request, response) => {
   // userRegistrationModel.findOne({ username: RegExp(uname) })
 
   /* keluarin banyak hasil */
-  userRegistrationModel.find({ username: RegExp(uname) }).exec()
+  userRegistrationModel.find({ username: RegExp(uname) }).sort( {_id: -1} ).exec()
   .then(res => {
     console.log( RegExp(uname) );
     console.log(res);
