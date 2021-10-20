@@ -49,9 +49,35 @@
           </tbody>
         </table>
       </div>
+      <div class="row row-modal">
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Warning!!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                You're about to delete the data. Are you sure you want to delete it?
+              </div>
+              <div class="modal-footer">
+<!--                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-delete">Yes, Delete</button> -->
+              </div>
+            </div>
+          </div>
+        </div>      
+      </div>
     </div>
   </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+<script src="https://pro.fontawesome.com/releases/v5.10.0/js/all.js" integrity="sha384-G/ZR3ntz68JZrH4pfPJyRbjW+c0+ojii5f+GYiYwldYU69A+Ejat6yIfLSxljXxD" crossorigin="anonymous"></script>
 <script type="text/javascript">
   let wrapperAlert = document.querySelector('.wrapper-alert-home');
   let tableBody = document.querySelector('.table-body');
@@ -128,7 +154,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>         
-      `;
+      `;      
 
       tableBody.innerHTML += `
         <tr>
@@ -140,7 +166,9 @@
           <td scope="col" class="text-center">${ datax.result[i].age }</td>
           <td scope="col" class="text-center">
             <a class="btn btn-outline-warning btn-sm" href="/find/${ datax.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
-            <button id="${ datax.result[i]._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
+            <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></button>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="${ datax.result[i]._id }"><i class="fa fa-angle-double-up"></i></button>
           </td>
         </tr>        
       `;
@@ -148,10 +176,55 @@
   })
   .catch(function (error) {
     // console.log(error)
+    // <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></button>
     error.message; //ambil parameter "message" dari await
   })
 
+  /* modal */
+  // document.querySelector('#exampleModal').on('show.bs.modal', function (event) {
+  $('#exampleModal').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget) // Button that triggered the modal
+    let recipient = button.data('whatever') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    let modal = $(this)
+    modal.find('.modal-title').text('Warning! ID ' + recipient)
+    $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>').appendTo('.modal-footer')
+    $('<button type="button" id="'+recipient+'" onclick="deleteUser(this.id)" class="btn btn-primary btn-delete">Yes, Delete</button>').appendTo('.modal-footer')
+    // modal.find('modal-footer').append(btnDismiss, btnDelete);
+    // modal.find('.btn-delete').click( deleteUser(recipient) );
+  })
+
+
   function deleteUser(params) {
+    document.querySelector('#exampleModal').style.display = 'none';
+    document.querySelector("body").classList.remove("modal-open");
+
+    fetch('/delete/'+params, {method: 'POST', headers: {'Content-Type': 'application/json'}})
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (result) {
+      console.log(result)
+      wrapperAlert.innerHTML = `
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong>${ result.message }!</strong> Data Dengan ID ${ result.result } terhapus. <strong>Tunggu beberapa saat lagi, Tabel akan me-reload data baru</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      `;
+
+      setTimeout(function () {
+        location.reload();
+      }, 4000)        
+    })
+    .catch(function(error) {
+      console.log(error)
+    })
+  }
+
+  function removeUser(params) {
     fetch('/remove/'+params, {method: 'GET', headers: {'Content-Type': 'application/json'}})
     .then(function (response) {
       return response.json();
@@ -283,8 +356,4 @@
     document.querySelector('#search').value = ''
   })    
 </script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
-<script defer src="https://pro.fontawesome.com/releases/v5.10.0/js/all.js" integrity="sha384-G/ZR3ntz68JZrH4pfPJyRbjW+c0+ojii5f+GYiYwldYU69A+Ejat6yIfLSxljXxD" crossorigin="anonymous"></script>
 </html>

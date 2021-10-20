@@ -77,6 +77,25 @@ exports.removeOne = async (request, response) => {
   })  
 }
 
+exports.deleteOne = (request, response) => {
+  let _id = request.params._id;
+  console.log(_id);
+
+  userRegistrationModel.deleteOne( { _id: _id } )
+  .then(resp => {
+    response.send({
+      message: "Delete Success",
+      result: _id
+    })
+  })
+  .catch(err => {
+    response.send({
+      message: "Failed to Delete Data",
+      result: err
+    })
+  })  
+}
+
 exports.findOne = async (request, response) => {
   let _params = await request.params._id;
 

@@ -12,6 +12,8 @@ routes.get('/list_all', userRegistrationCotroller.listAll);
 
 // href delete pada table
 routes.get('/remove/:_id', userRegistrationCotroller.removeOne);
+// button delete pada modal
+routes.post('/delete/:_id', userRegistrationCotroller.deleteOne);
 
 // href update pada table - menampilkan ke form baru
 routes.get('/find/:_id', userRegistrationCotroller.findOne);
