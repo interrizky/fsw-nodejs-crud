@@ -221,23 +221,9 @@
       })
       .then(function (result) {
         console.log(result);
-        if(result.message == "Success To Fetch Data" && (result.result != "" )) {
-          // wrapperAlert.innerHTML = `
-          //   <div class="alert alert-success alert-dismissible fade show" role="alert">
-          //     <p class="text-left"><b>${ result.message }!</b> Terdapat Data Sebagai Berikut:</p>
-          //     <div class="wrapper-data">
-          //       <p class="text-left"> Username: ${ result.result.username }</p>
-          //       <p class="text-left"> Password: ${ result.result.password }</p>
-          //       <p class="text-left"> Email: ${ result.result.email }</p>
-          //       <p class="text-left"> Age: ${ result.result.age }</p>
-          //       <p class="text-left"> Address: ${ result.result.address }</p>
-          //     </div>
-          //     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          //       <span aria-hidden="true">&times;</span>
-          //     </button>
-          //   </div>
-          // `;   
-          
+        tableBody.innerHTML = '';        
+        if((result.result.length > 0)) {
+          for(let i=0; i<result.result.length; i++) {
             wrapperAlert.innerHTML = `
               <div class="alert alert-info alert-dismissible fade show" role="alert">
                 <strong>${ result.message }!</strong> Terdapat Data Sebagai Berikut :
@@ -247,21 +233,21 @@
               </div>         
             `;
 
-            tableBody.innerHTML = '';
             tableBody.innerHTML += `
               <tr>
-                <td scope="col" class="text-center">1</td>
-                <td scope="col" class="text-center">${ result.result.username }</td>
-                <td scope="col" class="text-center">${ result.result.password }</td>
-                <td scope="col" class="text-center">${ result.result.email }</td>
-                <td scope="col" class="text-center">${ result.result.address }</td>
-                <td scope="col" class="text-center">${ result.result.age }</td>
+                <td scope="col" class="text-center">${ i+1 }</td>
+                <td scope="col" class="text-center">${ result.result[i].username }</td>
+                <td scope="col" class="text-center">${ result.result[i].password }</td>
+                <td scope="col" class="text-center">${ result.result[i].email }</td>
+                <td scope="col" class="text-center">${ result.result[i].address }</td>
+                <td scope="col" class="text-center">${ result.result[i].age }</td>
                 <td scope="col" class="text-center">
-                  <a class="btn btn-outline-warning btn-sm" href="/find/${ result.result._id }" role="button"><i class="fa fa-pencil"></i></a>
-                  <button id="${ result.result._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
+                  <a class="btn btn-outline-warning btn-sm" href="/find/${ result.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
+                  <button id="${ result.result[i]._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
                 </td>
               </tr>        
             `;
+          }
         } else {
           wrapperAlert.innerHTML = `
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -273,6 +259,7 @@
               </button>
             </div>
           `;         
+          tableBody.innerHTML = '';
         }
       })
       .catch(function (error){

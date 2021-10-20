@@ -103,10 +103,14 @@ exports.findOne = async (request, response) => {
 exports.searchOne = async (request, response) => {
   let uname = await request.params.uname;
 
-  userRegistrationModel.findOne({ username: uname })
+  /* keluarin cuma 1 hasil */
+  // userRegistrationModel.findOne({ username: RegExp(uname) })
+
+  /* keluarin banyak hasil */
+  userRegistrationModel.find({ username: RegExp(uname) }).exec()
   .then(res => {
-    console.log(res)
-    console.log(res.username)
+    console.log( RegExp(uname) );
+    console.log(res);
 
     /* jangan dihapus - lesson learned - mengirim data ke depan harus dalam bentuk JSON / Object */
     // response.render('home', params)
