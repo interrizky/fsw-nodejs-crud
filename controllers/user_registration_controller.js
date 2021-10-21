@@ -1,4 +1,5 @@
-const userRegistrationModel = require('../models/user_registration_model')
+const userRegistrationModel = require('../models/user_registration_model');
+const jwt = require('jsonwebtoken');
 
 exports.homepage = (request, response) => {
   response.render('home')
@@ -177,6 +178,52 @@ exports.updateOne = async (request, response) => {
   })
 }
 
-exports.loginTester = (reqeust, response) => {
-  
+exports.login = (request, response) => {
+  response.render('login');
+}
+
+exports.loginTester = async (request, response) => {
+  let uname = request.body.username;
+  let pass = request.body.password;
+
+  //if - else checking input
+  if( uname === '' || pass === '' || uname === null || pass === null ) {
+    response.send( {
+      message: "Invalid username or password",
+      result: "Invalid username or password",
+      status: 404
+    } )
+  } else {
+    const userData = await userRegistrationModel.findOne( {username: uname, password: pass} ).exec()
+
+    if( userData === null || userData === 'undefined' ) {
+      response.send( {
+        message: "Hey, Invalid username or password",
+        result: "Hey, Invalid username or password",
+        status: 404
+      } )      
+    } else {
+      let token = jwt.sign( {
+        username: userData.username,
+        email: userData.email,
+      }, 'myPrivateKey' );
+
+      let passingData = {
+        uid: userData._id,
+        username: userData.username,
+        email: userData.email,
+        age: userData.age,
+        address: userData.address,
+        token: userData.token,
+        token_type: 'Bearer'
+      }
+
+      response.send({
+        message: "Login Accepted",
+        result: passingData,
+        status: 200
+      })
+    }
+  }
+
 }
