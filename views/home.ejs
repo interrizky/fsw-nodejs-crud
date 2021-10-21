@@ -82,52 +82,6 @@
   let wrapperAlert = document.querySelector('.wrapper-alert-home');
   let tableBody = document.querySelector('.table-body');
 
-  // displayAll()
-  // function displayAll() {
-  //   fetch('/list_all', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //   })
-  //   .then(function (response) {
-  //     return response.json()
-  //   })
-  //   .then(function (result) {
-  //     // console.log(result)
-  //     let tableBody = document.querySelector('.table-body');
-  //     for (let i = 0; i < result.result.length; i++) {
-  //       data = result.result[i];
-  //       tableBody.innerHTML += `
-  //         <tr>
-  //           <td scope="col" class="text-center">${ i+1 }</td>
-  //           <td scope="col" class="text-center">${ result.result[i].username }</td>
-  //           <td scope="col" class="text-center">${ result.result[i].password }</td>
-  //           <td scope="col" class="text-center">${ result.result[i].email }</td>
-  //           <td scope="col" class="text-center">${ result.result[i].address }</td>
-  //           <td scope="col" class="text-center">${ result.result[i].age }</td>
-  //           <td scope="col" class="text-center">
-  //             <a class="btn btn-outline-warning btn-sm" href="/find/${ result.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
-  //             <button id="${ result.result[i]._id }" onclick="deleteUser(this.id)" class="btn btn-outline-danger btn-sm""><i class="fa fa-trash"></i></button>
-  //           </td>
-  //         </tr>        
-  //       `;
-
-  //       wrapperAlert.innerHTML = `
-  //         <div class="alert alert-info alert-dismissible fade show" role="alert">
-  //           <strong>${ result.message }!</strong>
-  //           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  //             <span aria-hidden="true">&times;</span>
-  //           </button>
-  //         </div>         
-  //       `;
-  //     }
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error)
-  //   })
-  // }
-
   /* async await implementation to fetch data from callback fetch */
   async function getDataTables() {
     const response = await fetch('/list_all', {method: 'GET', headers: {'Content-Type': 'application/json'}})
@@ -145,17 +99,31 @@
   }  
 
   getDataTables().then(function (datax) {
-    console.log("Dari Callback Func: ", datax);    
-    for (let i = 0; i < datax.result.length; i++) {
+    console.log("Dari Callback Func: ", datax);
+
+    let kuki_val = getCookie('user-data'); //ambil uname aja
+
+    if( kuki_val ) {
       wrapperAlert.innerHTML = `
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-          <strong>${ datax.message }!</strong>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          Welcome Back, <strong> ${ kuki_val } </strong>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-        </div>         
-      `;      
+        </div>                  
+      `;
+    }
 
+    wrapperAlert.innerHTML += `
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>${ datax.message }!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>         
+    `;          
+
+    for (let i = 0; i < datax.result.length; i++) {
       tableBody.innerHTML += `
         <tr>
           <td scope="col" class="text-center">${ i+1 }</td>
@@ -181,7 +149,6 @@
   })
 
   /* modal */
-  // document.querySelector('#exampleModal').on('show.bs.modal', function (event) {
   $('#exampleModal').on('show.bs.modal', function (event) {
     let button = $(event.relatedTarget) // Button that triggered the modal
     let recipient = button.data('whatever') // Extract info from data-* attributes
@@ -189,15 +156,15 @@
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
     let modal = $(this)
     modal.find('.modal-title').text('Warning! ID ' + recipient)
-    $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>').appendTo('.modal-footer')
-    $('<button type="button" id="'+recipient+'" onclick="deleteUser(this.id)" class="btn btn-primary btn-delete">Yes, Delete</button>').appendTo('.modal-footer')
-    // modal.find('modal-footer').append(btnDismiss, btnDelete);
-    // modal.find('.btn-delete').click( deleteUser(recipient) );
+    document.querySelector('.modal-footer').innerHTML = `
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <button type="button" id="${ recipient }" onclick="deleteUser(this.id)" class="btn btn-primary btn-delete">Yes, Delete</button>
+    `;
   })
 
 
   function deleteUser(params) {
-    document.querySelector('#exampleModal').style.display = 'none';
+    document.querySelector('#exampleModal').style.display = 'hide';
     document.querySelector("body").classList.remove("modal-open");
 
     fetch('/delete/'+params, {method: 'POST', headers: {'Content-Type': 'application/json'}})
@@ -217,7 +184,7 @@
 
       setTimeout(function () {
         location.reload();
-      }, 4000)        
+      }, 3000)        
     })
     .catch(function(error) {
       console.log(error)
@@ -249,41 +216,6 @@
       console.log(error)
     })
   }
-
-  /* async implementation to delete data - GAKBISA, AUTO JALANIN FUNCTION PADAHAL ACTION KAN BY CLICK */
-  // async function deleteUser(params) {
-  //   const response = await fetch('/remove/'+params, {method: 'GET', headers: {'Content-Type': 'application/json'}})
-  //   // error handling - throw ke catch error
-  //   if (!response.ok) {
-  //     const message = `An error has occured: ${response.status} & Text : ${response.statusText}`;
-  //     throw new Error(message);
-  //   }
-  //   const data = await response.json();
-
-  //   console.log(response)
-  //   console.log(data)
-    
-  //   return data;
-  // }
-
-  // deleteUser().then(function (result) {
-  //   console.log(result)
-  //   wrapperAlert.innerHTML = `
-  //     <div class="alert alert-success alert-dismissible fade show" role="alert">
-  //       <strong>${ result.message }!</strong> Data Dengan ID ${ result.result } terhapus. Refresh Halaman Untuk Mendapatkan Data Terkini
-  //       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  //         <span aria-hidden="true">&times;</span>
-  //       </button>
-  //     </div>
-  //   `;          
-  // }).then(function (next) {
-  //   setTimeout(function () {
-  //     location.href = 'http://localhost:9701/home'
-  //   },3000)
-  // }).catch(function (error) {
-  //   error.message;
-  // })
-  /* end async implementation to delete data */  
 
   let txtSearch = document.querySelector('#search')
   txtSearch.addEventListener('keyup', function(event){
@@ -355,5 +287,43 @@
   btnReset.addEventListener('click', function(event) {
     document.querySelector('#search').value = ''
   })    
+
+  /* customed, static - untuk dapat username aja */
+  function getCookie(name) {
+    let cookieArr = document.cookie.split(";");
+    //console.log(cookieArr[0]); //user-data={"uid":"616d155497369c1260605afe","username":"sebelas","email":"sebelas@sebelas.sebelas","age":"22","address":"\"Sebelas\"","token_type":"Bearer"}
+
+    for(let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        if(name == cookiePair[0].trim()) {
+          // return decodeURIComponent(cookiePair[1]);
+          //console.log(cookiePair[0].trim()); //user-data
+          //console.log(decodeURIComponent(cookiePair[1])); //{"uid":"616d155497369c1260605afe","username":"sebelas","email":"sebelas@sebelas.sebelas","age":"22","address":"\"Sebelas\"","token_type":"Bearer"}
+          let dataPair = decodeURIComponent(cookiePair[1]).split(":");
+          //console.log(dataPair.length); // 7
+          for(let i = 0; i < dataPair.length; i++) {
+            //console.log(dataPair[i]);
+            // {"uid"
+            // "616d155497369c1260605afe","username"
+            // "sebelas","email"
+            // "sebelas@sebelas.sebelas","age"
+            // "22","address"
+            // "\"Sebelas\"","token_type"
+            // "Bearer"}              
+            //console.log(dataPair[i].split(",")[0]);
+            // {"uid"
+            // "616d155497369c1260605afe"
+            // "sebelas"
+            // "sebelas@sebelas.sebelas"
+            // "22"
+            // "\"Sebelas\""
+            // "Bearer"}
+            //console.log(dataPair[2].split(",")[0]) // "sebelas"
+          }
+          return dataPair[2].split(",")[0].slice(1,-1); // sebelas
+        }
+    }
+    return null;
+  }
 </script>
 </html>
