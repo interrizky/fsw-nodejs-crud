@@ -176,3 +176,7 @@ exports.updateOne = async (request, response) => {
     })
   })
 }
+
+exports.loginTester = (reqeust, response) => {
+  
+}

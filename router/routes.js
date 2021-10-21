@@ -28,6 +28,9 @@ routes.post('/update_data', userRegistrationCotroller.updateOne);
 routes.get('/form', userRegistrationCotroller.form);
 routes.post('/post_data', userRegistrationCotroller.insert);
 
+// JWT Auth & Oauth
+routes.post('/login-tester', userRegistrationCotroller.loginTester);
+
 
 //Export ke index.JS
 module.exports = routes;
