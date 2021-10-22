@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Form</title>
-  <link rel="icon" href="/images/inter-snake.png" sizes="128x128" type="image/x-icon"/>
+  <link rel="icon" href="/images/binar-logos-notext.png" sizes="128x128" type="image/gif/png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">  
 </head>
 <body>
@@ -64,19 +64,6 @@
       if( result.message == 'Login Accepted' ) {
         /* first approach */
         let cookie = setCookie('user-data', JSON.stringify(result.result), 7);
-        // let kuki_val = getCookie('user-data');
-        // console.log(kuki_val);
-        // if( kuki_val ) {
-        //   let wrapperAlert = document.querySelector('.wrapper-alert');
-        //   wrapperAlert.innerHTML = `
-        //     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        //       <p class="text"> ${ kuki_val } </p>
-        //       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        //         <span aria-hidden="true">&times;</span>
-        //       </button>
-        //     </div>                  
-        //   `;
-        // }
         alert('Berhasil Login & Set Cookies');
         location.href = 'http://localhost:9701/home';
       } else {

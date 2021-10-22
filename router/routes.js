@@ -32,6 +32,9 @@ routes.post('/post_data', userRegistrationCotroller.insert);
 routes.get('/login', userRegistrationCotroller.login);
 routes.post('/login-tester', userRegistrationCotroller.loginTester);
 
+// dropdown - logout
+routes.get('/logout', userRegistrationCotroller.logout);
+
 
 //Export ke index.JS
 module.exports = routes;

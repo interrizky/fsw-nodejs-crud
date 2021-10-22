@@ -225,5 +225,9 @@ exports.loginTester = async (request, response) => {
       })
     }
   }
+}
 
+exports.logout = async (request, response) => {
+  //redirect to login page
+  response.render('login');
 }
