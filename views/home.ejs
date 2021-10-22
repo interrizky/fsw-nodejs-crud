@@ -9,6 +9,7 @@
 </head>
 <body>
   <div class="container-fluid">
+    <!-- start navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
       <a class="navbar-brand" onclick="location.reload();">
         <img src="/images/binar-logos-notext.png" alt="Navbar Logo" width="40" height="40">
@@ -39,36 +40,43 @@
         </ul>
       </div>
     </nav>
+    <!-- end navbar -->
+    <!-- start alert -->
     <div class="wrapper-alert-home mt-3 mb-2">
       
-    </div>    
-    <div class="wrapper-table mt-3 mb-2 ml-2">
-      <div class="row option d-flex bd-highlight mb-3">
-        <div class="wrapper-judul-tabel p-2 bd-highlight col-md-2">
+    </div>
+    <!-- end alert -->
+    <!-- start navigation -->
+    <div class="wrapper-navigation mt-3 mb-2">
+      <div class="row navigation">
+        <form class="form-inline col-md-2 wrapper-judul-tabel">
           <button type="button" name="btnForm" id="btnForm" class="btn btn-lg btn-outline-primary mb-2 w-10">
             <i class="fa fa-user-plus"></i>
           </button>
-        </div>
-          <form class="form-inline col-md-10 justify-content-end">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroupPrepend">@</span>
-              </div>
-              <input type="text" class="form-control search mr-2" id="search" name="search" placeholder="Find Username" style="width:25%;">
-            </div>            
-            <button type="button" name="btnSearchForm" id="btnSearchForm" class="btn btn-lg btn-outline-success mr-2">
-              <i class="fa fa-search"></i>
-            </button>              
-            <button type="button" name="btnReset" id="btnReset" class="btn btn-lg btn-outline-secondary mr-2">
-              <i class="fa fa-broom"></i>
-            </button>               
-            <button type="button" name="btnRefresh" id="btnRefresh" class="btn btn-lg btn-outline-info">
-              <i class="fa fa-sync"></i>
-            </button>
-          </form>
-        <!-- </div>    -->
+        </form>
+        <form class="form-inline col-md-10 justify-content-end">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroupPrepend">@</span>
+            </div>
+            <input type="text" class="form-control search mr-2" id="search" name="search" placeholder="Find Username" style="width:25%;">
+          </div>            
+          <button type="button" name="btnSearchForm" id="btnSearchForm" class="btn btn-lg btn-outline-success mr-2">
+            <i class="fa fa-search"></i>
+          </button>              
+          <button type="button" name="btnReset" id="btnReset" class="btn btn-lg btn-outline-secondary mr-2">
+            <i class="fa fa-broom"></i>
+          </button>               
+          <button type="button" name="btnRefresh" id="btnRefresh" class="btn btn-lg btn-outline-info">
+            <i class="fa fa-sync"></i>
+          </button>
+        </form>
       </div>  
-      <div class="row table-responsive">
+    </div>
+    <!-- end navigation -->
+    <!-- start responsive table -->
+    <div class="wrapper-table mb-2">
+      <div class="row table-responsive" style="margin-left: 0px;">
         <table class="table table-data">
           <caption class="caption">List All of User Registered</caption>
           <thead>
@@ -109,6 +117,7 @@
         </div>      
       </div>
     </div>
+    <!-- end responsive table -->    
   </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -159,7 +168,7 @@
             <a class="btn btn-outline-warning ml-1 mr-1 mt-0 mb-0 btn-sm" href="/find/${ datax.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
             <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger ml-1 mr-1 mt-0 mb-0 btn-sm"><i class="fa fa-trash"></i></button>
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-sm btn-outline-primary ml-1 mr-1 mt-0 mb-0" data-toggle="modal" data-target="#exampleModal" data-whatever="${ datax.result[i]._id }"><i class="fa fa-angle-double-up"></i></button>
+            <button type="button" class="btn btn-sm btn-outline-primary ml-1 mr-1 mt-0 mb-0" data-toggle="modal" data-target="#exampleModal" data-whatever="${ datax.result[i]._id }"><i class="fa fa-dumpster"></i></button>
           </td>
         </tr>        
       `;
