@@ -128,13 +128,18 @@
   let wrapperAlert = document.querySelector('.wrapper-alert-home');
   let tableBody = document.querySelector('.table-body');
 
-  let kuki_val = getCookie('user-data'); //ambil uname aja
   let dropDownText = document.querySelector('#navbarDropdown');
-  dropDownText.textContent = 'Welcome Back, ' +kuki_val.toUpperCase();
+  dropDownText.textContent = 'Welcome Back, ' +JSON.parse(getCookies('user-data')).username.toUpperCase();
 
   /* async await implementation to fetch data from callback fetch */
   async function getDataTables() {
-    const response = await fetch('/list_all', {method: 'GET', headers: {'Content-Type': 'application/json'}})
+    const response = await fetch('/list_all', {
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+JSON.parse(getCookies('user-data')).token
+      }
+    })
     // error handling - throw ke catch error
     if (!response.ok) {
       const message = `An error has occured: ${response.status} & Text : ${response.statusText}`;
@@ -205,7 +210,13 @@
     document.querySelector('#exampleModal').style.display = 'none';
     document.querySelector("body").classList.remove("modal-open");
 
-    fetch('/delete/'+params, {method: 'POST', headers: {'Content-Type': 'application/json'}})
+    fetch('/delete/'+params, {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' +JSON.parse(getCookies('user-data')).token
+      }
+    })
     .then(function (response) {
       return response.json();
     })
@@ -230,7 +241,13 @@
   }
 
   function removeUser(params) {
-    fetch('/remove/'+params, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+    fetch('/remove/'+params, {
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' +JSON.parse(getCookies('user-data')).token
+      }
+    })
     .then(function (response) {
       return response.json();
     })
@@ -332,40 +349,14 @@
     document.querySelector('#search').value = ''
   })    
 
-  /* customed, static - untuk dapat username aja */
-  function getCookie(name) {
-    let cookieArr = document.cookie.split(";");
-    //console.log(cookieArr[0]); //user-data={"uid":"616d155497369c1260605afe","username":"sebelas","email":"sebelas@sebelas.sebelas","age":"22","address":"\"Sebelas\"","token_type":"Bearer"}
-
-    for(let i = 0; i < cookieArr.length; i++) {
-        let cookiePair = cookieArr[i].split("=");
-        if(name == cookiePair[0].trim()) {
-          // return decodeURIComponent(cookiePair[1]);
-          //console.log(cookiePair[0].trim()); //user-data
-          //console.log(decodeURIComponent(cookiePair[1])); //{"uid":"616d155497369c1260605afe","username":"sebelas","email":"sebelas@sebelas.sebelas","age":"22","address":"\"Sebelas\"","token_type":"Bearer"}
-          let dataPair = decodeURIComponent(cookiePair[1]).split(":");
-          //console.log(dataPair.length); // 7
-          for(let i = 0; i < dataPair.length; i++) {
-            //console.log(dataPair[i]);
-            // {"uid"
-            // "616d155497369c1260605afe","username"
-            // "sebelas","email"
-            // "sebelas@sebelas.sebelas","age"
-            // "22","address"
-            // "\"Sebelas\"","token_type"
-            // "Bearer"}              
-            //console.log(dataPair[i].split(",")[0]);
-            // {"uid"
-            // "616d155497369c1260605afe"
-            // "sebelas"
-            // "sebelas@sebelas.sebelas"
-            // "22"
-            // "\"Sebelas\""
-            // "Bearer"}
-            //console.log(dataPair[2].split(",")[0]) // "sebelas"
-          }
-          return dataPair[2].split(",")[0].slice(1,-1); // sebelas
-        }
+  /* pake punya mas richo kemarin getCookie-nya */
+  function getCookies(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
     }
     return null;
   }

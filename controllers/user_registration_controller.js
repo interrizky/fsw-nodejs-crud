@@ -10,19 +10,42 @@ exports.form = (request, response) => {
 }
 
 exports.listAll = (request, response) => {
-  userRegistrationModel.find().sort( {_id: -1} )
-  .then(resp => {
-    response.send({
-      message: "Displaying Current Collections From MongoDB",
-      result: resp
-    })
-  })
-  .catch(err => {
-    response.send({
-      message: "failed to read data",
-      result: err
-    })
-  })  
+  let tokenAuth = request.headers.authorization;
+
+  // Check Token
+  if( tokenAuth === undefined || tokenAuth === null || tokenAuth === '' ) {
+    response.status(403).send( {message: 'failed to get data', status: 403} );
+  } else {
+    // Split the token type
+    let newTokenAuth = tokenAuth.split(' ');
+    // Check Token if it is Bearer
+    if( newTokenAuth[0] != 'Bearer') {
+      response.status(403).send( {message: 'failed to get data', status: 403} );
+    } else {
+      // Checking Token
+      const token = jwt.verify(newTokenAuth[1], 'myPrivateKey', (error, result) => {
+        if (error) return false; if (result) return result
+      })
+      // Decide if token = true or false
+      if( !token ) {
+        response.status(401).send( {message: 'failed to get token', status: 401} );
+      } else {
+        userRegistrationModel.find().sort( {_id: -1} )
+        .then(resp => {
+          response.send({
+            message: "Displaying Current Collections From MongoDB",
+            result: resp
+          })
+        })
+        .catch(err => {
+          response.send({
+            message: "failed to read data",
+            result: err
+          })
+        })
+      }
+    }
+  }  
 }  
 
 exports.insert = async (request, response) => {  
@@ -60,41 +83,91 @@ exports.search = (request, response) => {
 }
 
 exports.removeOne = async (request, response) => {
-  let _id = await request.params._id;
-  console.log(_id);
+  let tokenAuth = request.headers.authorization;
 
-  userRegistrationModel.deleteOne( { _id: _id } )
-  .then(resp => {
-    response.send({
-      message: "Delete Success",
-      result: _id
-    })
-  })
-  .catch(err => {
-    response.send({
-      message: "Failed to Delete Data",
-      result: err
-    })
-  })  
+  // Check Token
+  if( tokenAuth === undefined || tokenAuth === null || tokenAuth === '' ) {
+    response.status(403).send( {message: 'failed to get data', status: 403} );
+  } else {
+    // Split the token type
+    let newTokenAuth = tokenAuth.split(' ');
+    // Check Token if it is Bearer
+    if( newTokenAuth[0] != 'Bearer') {
+      response.status(403).send( {message: 'failed to get data', status: 403} );
+    } else {
+      // Checking Token
+      const token = jwt.verify(newTokenAuth[1], 'myPrivateKey', (error, result) => {
+        if (error) return false; if (result) return result
+      })
+      // Decide if token = true or false
+      if( !token ) {
+        response.status(401).send( {message: 'failed to get token', status: 401} );
+      } else {
+          let _id = await request.params._id;
+          console.log(_id);
+          console.log('Bearer ? '+newTokenAuth[0]);
+          console.log('Token ? ' +newTokenAuth[1]);          
+
+          userRegistrationModel.deleteOne( { _id: _id } )
+          .then(resp => {
+            response.send({
+              message: "Delete Success",
+              result: _id
+            })
+          })
+          .catch(err => {
+            response.send({
+              message: "Failed to Delete Data",
+              result: err
+            })
+          })  
+      }
+    }
+  }
 }
 
 exports.deleteOne = (request, response) => {
-  let _id = request.params._id;
-  console.log(_id);
+  let tokenAuth = request.headers.authorization;
 
-  userRegistrationModel.deleteOne( { _id: _id } )
-  .then(resp => {
-    response.send({
-      message: "Delete Success",
-      result: _id
-    })
-  })
-  .catch(err => {
-    response.send({
-      message: "Failed to Delete Data",
-      result: err
-    })
-  })  
+  // Check Token
+  if( tokenAuth === undefined || tokenAuth === null || tokenAuth === '' ) {
+    response.status(403).send( {message: 'failed to get data', status: 403} );
+  } else {
+    // Split the token type
+    let newTokenAuth = tokenAuth.split(' ');
+    // Check Token if it is Bearer
+    if( newTokenAuth[0] != 'Bearer') {
+      response.status(403).send( {message: 'failed to get data', status: 403} );
+    } else {
+      // Checking Token
+      const token = jwt.verify(newTokenAuth[1], 'myPrivateKey', (error, result) => {
+        if (error) return false; if (result) return result
+      })
+      // Decide if token = true or false
+      if( !token ) {
+        response.status(401).send( {message: 'failed to get token', status: 401} );
+      } else {
+        let _id = request.params._id;
+        console.log(_id);
+        console.log('Bearer ? '+newTokenAuth[0]);
+        console.log('Token ? ' +newTokenAuth[1]);
+
+        userRegistrationModel.deleteOne( { _id: _id } )
+        .then(resp => {
+          response.send({
+            message: "Delete Success",
+            result: _id
+          })
+        })
+        .catch(err => {
+          response.send({
+            message: "Failed to Delete Data",
+            result: err
+          })
+        })          
+      }
+    }
+  }  
 }
 
 exports.findOne = async (request, response) => {
@@ -208,15 +281,19 @@ exports.loginTester = async (request, response) => {
         email: userData.email,
       }, 'myPrivateKey' );
 
+      // console.log("Token : " +token);
+
       let passingData = {
         uid: userData._id,
         username: userData.username,
         email: userData.email,
         age: userData.age,
         address: userData.address,
-        token: userData.token,
+        token: token,
         token_type: 'Bearer'
       }
+
+      // console.log(passingData);
 
       response.send({
         message: "Login Accepted",
@@ -230,4 +307,43 @@ exports.loginTester = async (request, response) => {
 exports.logout = async (request, response) => {
   //redirect to login page
   response.render('login');
+}
+
+exports.author = (request, response) => {
+  let tokenAuth = request.headers.authorization;
+
+  // Check Token
+  if( tokenAuth === undefined || tokenAuth === null || tokenAuth === '' ) {
+    response.status(403).send( {message: 'failed to get data', status: 403} );
+  } else {
+    // Split the token type
+    let newTokenAuth = tokenAuth.split(' ');
+    // Check Token if it is Bearer
+    if( newTokenAuth[0] != 'Bearer') {
+      response.status(403).send( {message: 'failed to get data', status: 403} );
+    } else {
+      // Checking Token
+      const token = jwt.verify(newTokenAuth[1], 'myPrivateKey', (error, result) => {
+        if (error) return false; if (result) return result
+      })
+      // Decide if token = true or false
+      if( !token ) {
+        response.status(401).send( {message: 'failed to get token', status: 401} );
+      } else {
+        // on us - mau ngapain aja jika tokennya benar??
+        userRegistrationModel.find().exec()
+        .then(resp => {
+          response.send({
+            message: 'Authorization passed',
+            result: resp,
+            status: 200
+          });
+        })
+        .catch(error => {
+          response.status(500).send({message: 'failed to fetch data', status:500})
+        })
+
+      }
+    }
+  }
 }
