@@ -30,8 +30,6 @@
                 Home
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-              <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/logout">
                 <i class="fa fa-sign-out-alt"></i>
                 Logout
@@ -46,26 +44,26 @@
     </div>    
     <div class="wrapper-table mt-3 mb-2 ml-2">
       <div class="row option d-flex bd-highlight mb-3">
-        <div class="wrapper-judul-tabel p-2 bd-highlight col-md-4">
-          <button type="button" name="btnForm" id="btnForm" class="btn btn-primary mb-2 w-10">
+        <div class="wrapper-judul-tabel p-2 bd-highlight col-md-2">
+          <button type="button" name="btnForm" id="btnForm" class="btn btn-lg btn-outline-primary mb-2 w-10">
             <i class="fa fa-user-plus"></i>
-            NEW
           </button>
         </div>
-          <form class="form-inline col-md-8 justify-content-end">
+          <form class="form-inline col-md-10 justify-content-end">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroupPrepend">@</span>
               </div>
               <input type="text" class="form-control search mr-2" id="search" name="search" placeholder="Find Username" style="width:25%;">
             </div>            
-            <button type="button" name="btnReset" id="btnReset" class="btn btn-secondary mr-2">
+            <button type="button" name="btnSearchForm" id="btnSearchForm" class="btn btn-lg btn-outline-success mr-2">
+              <i class="fa fa-search"></i>
+            </button>              
+            <button type="button" name="btnReset" id="btnReset" class="btn btn-lg btn-outline-secondary mr-2">
               <i class="fa fa-broom"></i>
-              RESET
             </button>               
-            <button type="button" name="btnRefresh" id="btnRefresh" class="btn btn-info">
+            <button type="button" name="btnRefresh" id="btnRefresh" class="btn btn-lg btn-outline-info">
               <i class="fa fa-sync"></i>
-              RELOAD
             </button>
           </form>
         <!-- </div>    -->
@@ -136,27 +134,11 @@
     }
     const datax = await response.json();
 
-    console.log("Dari Async Func: ", response)
-    console.log("Dari Async Func: ", datax);
-
     return datax;
   }  
 
   getDataTables().then(function (datax) {
-    console.log("Dari Callback Func: ", datax);
-
-    if( kuki_val ) {
-      wrapperAlert.innerHTML = `
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          Welcome Back, <strong> ${ kuki_val } </strong>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>                  
-      `;
-    }
-
-    wrapperAlert.innerHTML += `
+    wrapperAlert.innerHTML = `
       <div class="alert alert-info alert-dismissible fade show" role="alert">
         <strong>${ datax.message }!</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -175,10 +157,10 @@
           <td scope="col" class="text-center">${ datax.result[i].address }</td>
           <td scope="col" class="text-center">${ datax.result[i].age }</td>
           <td scope="col" class="text-center">
-            <a class="btn btn-outline-warning btn-sm" href="/find/${ datax.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
-            <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></button>
+            <a class="btn btn-outline-warning ml-2 mr-2 mt-0 mb-0 btn-sm" href="/find/${ datax.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
+            <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger ml-2 mr-2 mt-0 mb-0 btn-sm"><i class="fa fa-trash"></i></button>
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="${ datax.result[i]._id }"><i class="fa fa-angle-double-up"></i></button>
+            <button type="button" class="btn btn-sm btn-outline-primary ml-2 mr-2 mt-0 mb-0" data-toggle="modal" data-target="#exampleModal" data-whatever="${ datax.result[i]._id }"><i class="fa fa-angle-double-up"></i></button>
           </td>
         </tr>        
       `;
@@ -189,6 +171,8 @@
     // <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></button>
     error.message; //ambil parameter "message" dari await
   })
+  /* end async await implementation to fetch data from callback fetch */
+
 
   /* modal */
   $('#exampleModal').on('show.bs.modal', function (event) {
@@ -203,7 +187,6 @@
       <button type="button" id="${ recipient }" onclick="deleteUser(this.id)" class="btn btn-primary btn-delete">Yes, Delete</button>
     `;
   })
-
 
   function deleteUser(params) {
     document.querySelector('#exampleModal').style.display = 'hide';
@@ -260,9 +243,13 @@
   }
 
   let txtSearch = document.querySelector('#search')
-  txtSearch.addEventListener('keyup', function(event){
-    if (event.keyCode === 13) {
-      fetch('/search/'+txtSearch.value, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+  let btnSearchForm = document.querySelector('#btnSearchForm');
+  btnSearchForm.addEventListener('click', async function(event) {
+    if( await txtSearch.value === '' || await txtSearch.value === null ) {
+      alert( "Texboxt Search Belum Terisi" );
+      location.reload();
+    } else {
+      await fetch('/search/'+txtSearch.value, {method: 'GET', headers: {'Content-Type': 'application/json'}})
       .then(function (response) {
         return response.json();
       })
@@ -306,12 +293,12 @@
               </button>
             </div>
           `;         
-          tableBody.innerHTML = '';
+          tableBody.innerHTML = '';    
         }
       })
-      .catch(function (error){
-        console.log(error);
-      })
+      .catch(error => {
+      console.log(error)
+    })      
     }
   })
 

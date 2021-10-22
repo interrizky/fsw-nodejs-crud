@@ -129,8 +129,8 @@ exports.searchOne = async (request, response) => {
   /* keluarin banyak hasil */
   userRegistrationModel.find({ username: RegExp(uname) }).sort( {_id: -1} ).exec()
   .then(res => {
-    console.log( RegExp(uname) );
-    console.log(res);
+    // console.log( RegExp(uname) );
+    // console.log(res);
 
     /* jangan dihapus - lesson learned - mengirim data ke depan harus dalam bentuk JSON / Object */
     // response.render('home', params)
