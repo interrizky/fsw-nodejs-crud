@@ -102,8 +102,7 @@
                 You're about to delete the data. Are you sure you want to delete it?
               </div>
               <div class="modal-footer">
-<!--                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary btn-delete">Yes, Delete</button> -->
+
               </div>
             </div>
           </div>
@@ -182,13 +181,19 @@
     let modal = $(this)
     modal.find('.modal-title').text('Warning! ID ' + recipient)
     document.querySelector('.modal-footer').innerHTML = `
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      <button type="button" id="${ recipient }" onclick="deleteUser(this.id)" class="btn btn-primary btn-delete">Yes, Delete</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        <i class="fa fa-thumbs-down"></i>
+        Nah, I Change My Mind
+      </button>
+      <button type="button" id="${ recipient }" onclick="deleteUser(this.id)" class="btn btn-primary btn-delete">
+        <i class="fa fa-thumbs-up"></i>
+        Sure, Go Ahead
+      </button>
     `;
   })
 
   function deleteUser(params) {
-    document.querySelector('#exampleModal').style.display = 'hide';
+    document.querySelector('#exampleModal').style.display = 'none';
     document.querySelector("body").classList.remove("modal-open");
 
     fetch('/delete/'+params, {method: 'POST', headers: {'Content-Type': 'application/json'}})
