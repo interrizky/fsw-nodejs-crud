@@ -157,10 +157,10 @@
           <td scope="col" class="text-center">${ datax.result[i].address }</td>
           <td scope="col" class="text-center">${ datax.result[i].age }</td>
           <td scope="col" class="text-center">
-            <a class="btn btn-outline-warning ml-2 mr-2 mt-0 mb-0 btn-sm" href="/find/${ datax.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
-            <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger ml-2 mr-2 mt-0 mb-0 btn-sm"><i class="fa fa-trash"></i></button>
+            <a class="btn btn-outline-warning ml-1 mr-1 mt-0 mb-0 btn-sm" href="/find/${ datax.result[i]._id }" role="button"><i class="fa fa-pencil"></i></a>
+            <button id="${ datax.result[i]._id }" onclick="removeUser(this.id)" class="btn btn-outline-danger ml-1 mr-1 mt-0 mb-0 btn-sm"><i class="fa fa-trash"></i></button>
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-sm btn-outline-primary ml-2 mr-2 mt-0 mb-0" data-toggle="modal" data-target="#exampleModal" data-whatever="${ datax.result[i]._id }"><i class="fa fa-angle-double-up"></i></button>
+            <button type="button" class="btn btn-sm btn-outline-primary ml-1 mr-1 mt-0 mb-0" data-toggle="modal" data-target="#exampleModal" data-whatever="${ datax.result[i]._id }"><i class="fa fa-angle-double-up"></i></button>
           </td>
         </tr>        
       `;
