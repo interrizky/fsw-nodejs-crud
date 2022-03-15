@@ -36,7 +36,3 @@ routes.get('/author', userRegistrationCotroller.author);
 
 // dropdown - logout
 routes.get('/logout', userRegistrationCotroller.logout);
-
-
-//Export ke index.JS
-module.exports = routes;
